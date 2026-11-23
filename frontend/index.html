@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduGrade</title>
+  <script>
+    if (!sessionStorage.getItem("edugrade_auth") || !sessionStorage.getItem("edugrade_subject")) {
+      location.replace("login.html");
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><path d="M16 4a4 4 0 0 1 0 8M22 21v-1a6 6 0 0 0-4-5.6"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></symbol>
+      <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+      <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon"><svg class="ic"><use href="#i-cap"/></svg></span>
+      <span class="brand-name">EduGrade</span>
+    </div>
+    <div class="userbar">
+      <span class="chip"><svg class="ic"><use href="#i-user"/></svg><span id="teacherName">Teacher</span></span>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm"><svg class="ic"><use href="#i-logout"/></svg>Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="page-head">
+      <h1>Dashboard</h1>
+      <p id="heroSub">Student Academic Performance &amp; At-Risk Intervention System</p>
+    </div>
+
+    <section class="metrics">
+      <div class="metric">
+        <div class="metric-top"><span>Total Students</span><svg class="ic"><use href="#i-users"/></svg></div>
+        <h2 id="totalStudents">0</h2>
+      </div>
+      <div class="metric">
+        <div class="metric-top"><span>Predicted Grade</span><svg class="ic"><use href="#i-target"/></svg></div>
+        <h2 id="metricGrade">Awaiting</h2>
+      </div>
+      <div class="metric">
+        <div class="metric-top"><span>Academic Risk</span><svg class="ic"><use href="#i-alert"/></svg></div>
+        <h2 id="metricRisk">Awaiting</h2>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <button id="addBtn" class="btn"><svg class="ic"><use href="#i-plus"/></svg>Add Student</button>
+      <select id="studentSelect" class="select-student">
+        <option value="">Select a student</option>
+      </select>
+      <button id="predictBtn" class="btn"><svg class="ic"><use href="#i-target"/></svg>Predict</button>
+      <button id="editBtn" class="btn btn-ghost"><svg class="ic"><use href="#i-edit"/></svg>Edit</button>
+      <button id="deleteBtn" class="btn btn-ghost btn-danger"><svg class="ic"><use href="#i-trash"/></svg>Delete</button>
+    </div>
+
+    <h3 class="section-title">Student Performance</h3>
+    <div class="panel">
+      <div id="chartMsg" class="muted">Select a student from the dropdown above to see their performance.</div>
+      <div id="perfBox" class="hidden">
+        <div class="perf-head">
+          <div>
+            <div id="perfName" class="perf-name"></div>
+            <div id="perfId" class="muted"></div>
+          </div>
+          <div id="perfTrend" class="trend"></div>
+        </div>
+        <div id="statRow" class="stat-row"></div>
+        <div id="chart"></div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Recent Prediction</h3>
+    <div class="panel" id="recent">
+      <span class="muted">Select a student and click Predict.</span>
+    </div>
+
+    <h3 class="section-title">How Risk Is Decided</h3>
+    <div class="panel">
+      <p class="muted">We look at the average of First_Term and Second_Term marks, past failures and absences. Rules are checked from the top: High first, then Medium, otherwise Low.</p>
+      <div class="risk-grid">
+        <div class="risk-card" id="rc-High">
+          <span class="pill pill-high">High risk</span>
+          <h4>Needs help soon</h4>
+          <ul>
+            <li>Average marks below 10</li>
+            <li>or 2 or more past failures</li>
+          </ul>
+        </div>
+        <div class="risk-card" id="rc-Medium">
+          <span class="pill pill-medium">Medium risk</span>
+          <h4>Keep an eye</h4>
+          <ul>
+            <li>Average marks below 14</li>
+            <li>or more than 15 absences</li>
+          </ul>
+        </div>
+        <div class="risk-card" id="rc-Low">
+          <span class="pill pill-low">Low risk</span>
+          <h4>Doing fine</h4>
+          <ul>
+            <li>None of the above</li>
+          </ul>
+        </div>
+      </div>
+      <p class="muted note"><b>Example:</b> First_Term 8 and Second_Term 10 give an average of 9, so the risk is High. After you click Predict, the matching box lights up.</p>
+      <p class="muted note">Early-support signal only. Teacher review is required before any action.</p>
+    </div>
+
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <form id="studentForm" class="modal-card">
+      <h2 id="formTitle">Student Information</h2>
+
+      <div class="grid">
+        <div>
+          <label>Student ID</label>
+          <input type="text" id="sid" maxlength="20" placeholder="e.g. S001" required>
+        </div>
+        <div>
+          <label>Student Name</label>
+          <input type="text" id="label" maxlength="40" placeholder="Enter student name" required>
+        </div>
+        <div>
+          <label>Age</label>
+          <input type="number" id="age" min="15" max="22" value="17" required>
+        </div>
+        <div>
+          <label>Study Time</label>
+          <select id="studytime">
+            <option value="1">1 - Less than 2 hours</option>
+            <option value="2" selected>2 - 2 to 5 hours</option>
+            <option value="3">3 - 5 to 10 hours</option>
+            <option value="4">4 - More than 10 hours</option>
+          </select>
+        </div>
+        <div>
+          <label>Past Failures</label>
+          <select id="failures">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div>
+          <label>Absences</label>
+          <input type="number" id="absences" min="0" max="93" value="4" required>
+        </div>
+        <div>
+          <label>School Support (schoolsup)</label>
+          <select id="schoolsup"><option value="0">0</option><option value="1">1</option></select>
+        </div>
+        <div>
+          <label>Family Support (famsup)</label>
+          <select id="famsup"><option value="0">0</option><option value="1">1</option></select>
+        </div>
+        <div>
+          <label>Paid Classes (paid)</label>
+          <select id="paid"><option value="0">0</option><option value="1">1</option></select>
+        </div>
+        <div>
+          <label>Extra Activities (activities)</label>
+          <select id="activities"><option value="0">0</option><option value="1">1</option></select>
+        </div>
+        <div>
+          <label>Internet Access (internet)</label>
+          <select id="internet"><option value="0">0</option><option value="1">1</option></select>
+        </div>
+        <div>
+          <label>Higher Education Plan (higher)</label>
+          <select id="higher"><option value="0">0</option><option value="1">1</option></select>
+        </div>
+        <div>
+          <label>Mother's Education (Medu)</label>
+          <select id="Medu">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option>
+          </select>
+        </div>
+        <div>
+          <label>Father's Education (Fedu)</label>
+          <select id="Fedu">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option>
+          </select>
+        </div>
+        <div>
+          <label>First Term Grade (First_Term)</label>
+          <input type="number" id="G1" min="0" max="20" value="10" required>
+        </div>
+        <div>
+          <label>Second Term Grade (Second_Term)</label>
+          <input type="number" id="G2" min="0" max="20" value="10" required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn"><svg class="ic"><use href="#i-save"/></svg>Save Details</button>
+        <button type="button" id="cancelBtn" class="btn btn-ghost"><svg class="ic"><use href="#i-x"/></svg>Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

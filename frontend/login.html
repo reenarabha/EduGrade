@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduGrade | Teacher Login</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-cap" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    </defs>
+  </svg>
+
+  <main class="login-wrap">
+    <form id="loginForm" class="login-card" autocomplete="off">
+      <div class="brand">
+        <span class="brand-icon"><svg class="ic"><use href="#i-cap"/></svg></span>
+        <span class="brand-name">EduGrade</span>
+      </div>
+      <h1 id="modeTitle">Teacher Login</h1>
+      <p class="sub">Sign in to view your subject's students.</p>
+
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter username" required>
+
+      <div id="subjectWrap" class="hidden">
+        <label for="subject">Subject you teach</label>
+        <select id="subject">
+          <option value="">Select subject</option>
+          <option>Mathematics</option>
+          <option>Science</option>
+          <option>English</option>
+          <option>Hindi</option>
+          <option>Computer Science</option>
+          <option>Social Science</option>
+        </select>
+      </div>
+
+      <label for="password">Password</label>
+      <div class="pw-row">
+        <input type="password" id="password" placeholder="Enter password" required minlength="6">
+        <button type="button" id="togglePw" class="eye" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button>
+      </div>
+
+      <div id="confirmWrap" class="hidden">
+        <label for="confirm">Confirm password</label>
+        <input type="password" id="confirm" placeholder="Re-enter password">
+      </div>
+
+      <div id="loginError" class="login-error hidden"></div>
+
+      <button type="submit" class="login-btn" id="submitBtn">Login</button>
+
+      <p class="switch">
+        <span id="switchText">New teacher?</span>
+        <a href="#" id="switchLink">Register</a>
+      </p>
+      <p class="note">Authorised teachers only. You can see only your own subject's students.</p>
+    </form>
+  </main>
+  <script src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+:root{--bg:#08080C;--card:#111116;--line:#26262E;--text:#F4F4F7;--muted:#9A9AA8;--accent:#8B5CF6;--accent-h:#7C3AED;--soft:#C4B5FD}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',Arial,sans-serif;font-size:15px}
+.hidden{display:none!important}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:1px solid var(--line);background:var(--card)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:38px;height:38px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center}
+.brand-name{font-size:20px;font-weight:700}
+.userbar{display:flex;align-items:center;gap:12px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;color:var(--soft)}
+
+.container{max-width:1100px;margin:0 auto;padding:32px 24px 60px}
+.page-head h1{font-size:30px}
+.page-head p{color:var(--muted);margin-top:6px}
+
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+.metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.metric-top{display:flex;justify-content:space-between;color:var(--muted);margin-bottom:10px}
+.metric h2{font-size:30px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:8px}
+.select-student{min-width:260px;width:auto;padding:11px 14px;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;font-size:15px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--accent-h)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--line)}
+.btn-ghost:hover{background:#1A1A22;border-color:var(--accent)}
+.btn-danger:hover{border-color:#F87171;color:#F87171}
+.btn-sm{padding:8px 14px}
+
+.section-title{margin:28px 0 12px;font-size:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.muted{color:var(--muted)}
+.note{margin-top:12px}
+.error-box{padding:14px;border:1px solid #F87171;border-radius:10px;color:#FCA5A5}
+
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid var(--line)}
+.pill-low{color:#86EFAC;border-color:#166534}
+.pill-medium{color:#FCD34D;border-color:#854D0E}
+.pill-high{color:#FCA5A5;border-color:#991B1B}
+.pill-grade{color:var(--soft);border-color:var(--accent)}
+
+.perf-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.perf-name{font-size:20px;font-weight:700}
+.trend{padding:6px 14px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid var(--line)}
+.trend-up{color:#86EFAC;border-color:#166534}
+.trend-down{color:#FCA5A5;border-color:#991B1B}
+.trend-same{color:var(--soft);border-color:var(--accent)}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.stat span{display:block;color:var(--muted);font-size:13px}
+.stat b{font-size:20px}
+
+.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.risk-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+.risk-card h4{margin:12px 0 8px;font-size:17px}
+.risk-card ul{padding-left:18px;color:var(--muted);line-height:1.7}
+.risk-card.active{border-color:var(--accent);background:#17132A}
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.modal-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px;width:100%;max-width:760px;max-height:90vh;overflow-y:auto}
+.modal-card h2{margin-bottom:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{display:block;margin-bottom:6px;color:var(--muted);font-size:13px}
+input,select{width:100%;padding:11px 12px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.select-student{width:auto}
+.form-actions{display:flex;gap:12px;margin-top:24px}
+
+@media(max-width:700px){
+  .metrics,.grid{grid-template-columns:1fr}
+  .stat-row,.risk-grid{grid-template-columns:1fr 1fr}
+}
