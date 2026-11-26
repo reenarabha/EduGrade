@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import requests
 
@@ -47,8 +48,8 @@ if submitted:
     }
     
     try:
-        
-response = requests.post("http://172.18.160.33:8000/predict", json=data)
+        api_url = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
+        response = requests.post(api_url, json=data, timeout=10)
         if response.status_code == 200:
             result = response.json()
             st.success("Prediction Successful!")

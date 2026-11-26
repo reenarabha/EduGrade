@@ -1,6 +1,15 @@
 const SUBJECT = sessionStorage.getItem("edugrade_subject");
 const STORE_KEY = "edugrade_students_" + SUBJECT;
-const API_URL = "http://127.0.0.1:8000/predict";
+const API_URL = (() => {
+  if (window.EDUGRADE_API_URL) return window.EDUGRADE_API_URL;
+  const isLocalDevServer =
+    location.protocol === "file:" ||
+    ((location.hostname === "localhost" || location.hostname === "127.0.0.1") &&
+      location.port !== "" &&
+      location.port !== "8000" &&
+      location.port !== "3000");
+  return isLocalDevServer ? "http://127.0.0.1:8000/predict" : "/api/predict";
+})();
 const USE_FALLBACK = true;   // API band ho to rule-based estimate dikhao (screen par clearly likha hota hai)
 const FIELDS = ["age","studytime","failures","absences","schoolsup","famsup","paid","activities","internet","higher","Medu","Fedu","G1","G2"];
 const DEFAULTS = {age:17, studytime:2, failures:0, absences:4, schoolsup:0, famsup:0, paid:0, activities:0, internet:1, higher:1, Medu:2, Fedu:2, G1:10, G2:10};
@@ -186,8 +195,22 @@ $("studentForm").onsubmit = e => {
 
 /* ---- predict ---- */
 async function apiPredict(s) {
-  const body = {};
-  FIELDS.forEach(f => { body[f] = s[f]; });   // G3, ID aur name kabhi nahi bhejte
+  const body = {
+    age: s.age,
+    studytime: s.studytime,
+    failures: s.failures,
+    absences: s.absences,
+    schoolsup: s.schoolsup,
+    famsup: s.famsup,
+    paid: s.paid,
+    activities: s.activities,
+    internet: s.internet,
+    higher: s.higher,
+    Medu: s.Medu,
+    Fedu: s.Fedu,
+    First_Term: s.G1,
+    Second_Term: s.G2
+  };
   const res = await fetch(API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -204,7 +227,12 @@ $("predictBtn").onclick = async () => {
   $("recent").innerHTML = '<span class="muted">Predicting...</span>';
   try {
     const r = await apiPredict(s);
-    s.pred = { grade_band: r.grade_band, risk: r.risk, source: "model" };
+    const predictedGrade = r.predicted_grade_band || r.grade_band;
+    const predictedRisk = r.risk_level || r.risk;
+    if (!predictedGrade || !predictedRisk) {
+      throw new Error("Invalid API response");
+    }
+    s.pred = { grade_band: predictedGrade, risk: predictedRisk, source: "model" };
   } catch (err) {
     console.error(err);
     if (USE_FALLBACK) {
