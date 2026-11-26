@@ -1,0 +1,7 @@
+backend/
+ML/
+student_model.pkl
+render.yaml
+.git/
+__pycache__/
+*.pyc
